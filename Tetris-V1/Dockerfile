@@ -1,23 +1,23 @@
-# Use the official Node.js 18 image as the base image
-FROM node:18
+# Use official Node.js 16 image (compatible with react-scripts 4.0.3)
+FROM node:16
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json (or yarn.lock) to the container
+# Copy only package.json and package-lock.json for better layer caching
 COPY package*.json ./
 
 # Install project dependencies
 RUN npm install
 
-# Copy the rest of the application code to the container
+# Copy the rest of the application code
 COPY . .
 
-# Build the React app with OpenSSL legacy provider workaround
-RUN NODE_OPTIONS=--openssl-legacy-provider npm run build
+# Build the React app for production
+RUN npm run build
 
-# Expose the port that the app will run on (default: 3000)
+# Expose the port the app will run on (optional if using a web server like nginx externally)
 EXPOSE 3000
 
-# Start the React app
-CMD ["npm", "start"]
+# Start the app (optional; use this only if you're running a dev server like `react-scripts start`)
+# CMD ["npm", "start"]
